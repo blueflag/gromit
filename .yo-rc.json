@@ -1,0 +1,15 @@
+{
+  "generator-bigdatr-startr": {
+    "promptValues": {
+      "name": "gromit",
+      "description": "",
+      "version": "0.0.0",
+      "license": "UNLICENSED",
+      "private": false,
+      "author": "blueflag",
+      "username": "blueflag",
+      "nameConstant": "GROMIT",
+      "example": true
+    }
+  }
+}
