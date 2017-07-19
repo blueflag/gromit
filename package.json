@@ -1,5 +1,5 @@
 {
-  "main": "src/gromit/client.js",
+  "main": "lib/index.js",
   "files": [
     "lib"
   ],
@@ -17,11 +17,11 @@
   },
   "private": false,
   "scripts": {
-    "build": "rm -rf lib && babel src --out-dir lib",
+    "watch": "rm -rf lib && babel src --out-dir lib -w",
+    "build": "rm -rf lib && babel src --out-dir lib && node ./scripts/flow",
     "build-examples": "cd example && yarn install && yarn run build && cd -",
     "deploy-to-gh-pages": "yarn run build && yarn run build-examples && yarn run docs && node scripts/publish.js",
     "prepublish": "yarn run build",
-    "watch": "yarn run build -- -w",
     "ava": "NODE_ENV=test ava",
     "check-coverage": "NODE_ENV=test nyc check-coverage --branches 100.0  --functions 100.0 --lines 100.0",
     "docs": "jsdoc -c jsdoc.json",
@@ -36,14 +36,16 @@
     "babel-cli": "^6.23.0",
     "babel-core": "^6.23.0",
     "babel-plugin-istanbul": "^4.1.4",
-    "babel-preset-blueflag": "^0.5.0",
+    "babel-preset-blueflag": "^0.6.0",
     "babel-register": "^6.23.0",
     "dotenv": "4.0.0",
     "eslint": "^4.2.0",
     "eslint-config-blueflag": "^0.5.0",
     "flow-bin": "^0.50.0",
+    "fs-extra": "^4.0.0",
     "gh-pages": "^1.0.0",
     "git-url-parse": "^7.0.0",
+    "globby": "^6.1.0",
     "jsdoc": "^3.4.3",
     "jsdoc-babel": "^0.3.0",
     "jsdoc-react-proptypes": "^1.0.1",
@@ -92,5 +94,9 @@
     "require": [
       "babel-register"
     ]
+  },
+  "dependencies": {
+    "axios": "^0.16.2",
+    "babel-runtime": "^6.23.0"
   }
 }
