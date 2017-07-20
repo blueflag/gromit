@@ -3,14 +3,8 @@ import Gromit from 'gromit';
 
 
 const request = async () => {
-    var response = await Gromit({
-        baseUrl: 'http://localhost:6822'
-    })
-        .get('jarvis/userpulse/no_of_users.son')
-        .fetch()
-        .catch(err => console.dir(err));
-
-    console.log(response);
+    const {data} = await Gromit().get('/src/data/file.json');
+    console.log(data);
 }
 
 export default class Demo extends React.Component {
