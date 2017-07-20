@@ -4,6 +4,14 @@ import GromitError from './GromitError';
 import GromitResponse from './GromitResponse';
 
 /**
+ *
+ * @module Gromit
+ *
+ */
+
+
+
+/**
  * Data to send with a request. Only allowed for request methods that allow a body (`post`, `put`, `patch`)
  * @typedef GromitBodyData
  * @type {string | Object | ArrayBuffer | ArrayBufferView | URLSearchParams | FormData | File | Blob | Stream | Buffer}
@@ -121,6 +129,11 @@ export class Gromit {
     configuration: GromitConfiguration;
 
     constructor(configuration: GromitConfiguration) {
+        /**
+         * The configuration for this instance of gromit. Do not update this directly, use the
+         * `gromit.configure()` method.
+         * @type GromitConfiguration
+         */
         this.configuration = {
             ...defaultConfig,
             ...configuration

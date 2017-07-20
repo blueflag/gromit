@@ -1,5 +1,12 @@
 //@flow
 
+
+/**
+ *
+ * @module Gromit
+ *
+ */
+
 // This implementation is based roughly on Boom: https://github.com/hapijs/boom
 
 import {Gromit} from './Gromit';
@@ -74,27 +81,68 @@ export type GromitErrorResponseData = {
 };
 
 
-
+/**
+ *
+ * Gromit Error Object
+ * @extends Error
+ *
+ */
 export default class GromitError extends Error {
     statusCode: number;
     name: string;
     message: string;
     data: ?Object;
-    isGromitError: bool = true;
+    isGromitError: bool;
 
-
+    /**
+     *
+     * Create a new GromitError
+     * @param {Error} error - the error object to extend from
+     * @param {Object} errorData - An object of data to apply to the error
+     * @param {number} errorData.statusCode - A HTTP status code to use for the error
+     * @param {string} errorData.name - a unique name for this error, eg. `USER_DOES_NOT_EXIST`
+     * @param {string} errorData.message - The error message
+     * @param {Object} errorData.data - extra data to apply to the error
+     *
+     */
     constructor(
         error: Error,
         errorData: GromitErrorResponseData
     ) {
         super(error);
+
+        /**
+         * The HTTP status code for this error
+         */
         this.statusCode = errorData.statusCode;
+
+        /**
+         * A unique name for the error
+         */
         this.name = errorData.name;
+
+        /**
+         * The HTTP status code for this error
+         */
         this.message = errorData.message;
+
+        /**
+         * Misc data about the error
+         */
         this.data = errorData.data;
+
+        /**
+         * Indicates that this is a GromitError (should always be true)
+         */
+        this.isGromitError = true;
     }
 
-
+    /**
+     *
+     * Serialize the error statusCode and name into the error message so that the error can
+     * pass through something that strips away extra data. (looking at you graphql-js)
+     * @return {GromitError} - A new gromit error
+     */
     serialize(): GromitError {
         const message = `[${this.statusCode}][${this.name}] ${this.message}`;
 
@@ -106,7 +154,13 @@ export default class GromitError extends Error {
         });
     }
 
-
+    /**
+     *
+     * Deserialize a serialized GromitError. This will pull the serialized data out of the error
+     * message and add it back in as structured data
+     * @param {Error} error - The error to deserialize
+     * @return {GromitError} - A new GromitError
+     */
     static deserialize(error: Error): GromitError {
         const errData = error.message.match(/^\[(.+?)\]\[(.+?)\](.+$)/);
         if(!errData) return GromitError.wrap(error);
@@ -118,7 +172,16 @@ export default class GromitError extends Error {
         return GromitError.wrap(error, statusCode, message, name);
     }
 
-
+    /**
+     *
+     * Wrap an existing error to turn it into a GromitError with the provided data
+     * @param {Error} error - The error object to wrap
+     * @param {number} [statusCode=500] - The status code to apply to the error
+     * @param {string} [message] - Override the existing error message if provided
+     * @param {string} [name] - A unique name for the error. If not provided the default name for the status code will be used.
+     * @param {Object} [data] - Extra data to add to the error
+     * @return {GromitError} - A new GromitError
+     */
     static wrap(error: Error, statusCode: ?number, message: ?string, name: ?string, data: ?Object): GromitError {
         const errorStatusCode = statusCode || 500;
         const defaultErrorData = STATUS_CODE_MAP[errorStatusCode];
@@ -133,6 +196,15 @@ export default class GromitError extends Error {
         });
     }
 
+    /**
+     *
+     * Create a new error from scratch
+     * @param {number} [statusCode=500] - The status code to apply to the error
+     * @param {string} [message] - Override the existing error message if provided
+     * @param {string} [name] - A unique name for the error. If not provided the default name for the status code will be used.
+     * @param {Object} [data] - Extra data to add to the error
+     * @return {GromitError} - A new GromitError
+     */
     static create(statusCode: ?number, message: ?string, name: ?string, data: ?Object): GromitError {
         const errorStatusCode = statusCode || 500;
         const defaultErrorData = STATUS_CODE_MAP[errorStatusCode];
@@ -151,138 +223,377 @@ export default class GromitError extends Error {
         });
     }
 
+
+    /**
+     * Create a new badRequest (400) error
+     * @param {string} [message] - Override the existing error message if provided
+     * @param {string} [name] - A unique name for the error. If not provided the default name for the status code will be used.
+     * @param {Object} [data] - Extra data to add to the error
+     * @return {GromitError} - A new GromitError
+     */
     static badRequest(message: ?string, name: ?string, data: ?Object): GromitError {
         return GromitError.create(400, message, name, data);
     }
 
+    /**
+     * Create a new unauthorized (401) error
+     * @param {string} [message] - Override the existing error message if provided
+     * @param {string} [name] - A unique name for the error. If not provided the default name for the status code will be used.
+     * @param {Object} [data] - Extra data to add to the error
+     * @return {GromitError} - A new GromitError
+     */
     static unauthorized(message: ?string, name: ?string, data: ?Object): GromitError {
         return GromitError.create(401, message, name, data);
     }
 
+    /**
+     * Create a new paymentRequired (402) error
+     * @param {string} [message] - Override the existing error message if provided
+     * @param {string} [name] - A unique name for the error. If not provided the default name for the status code will be used.
+     * @param {Object} [data] - Extra data to add to the error
+     * @return {GromitError} - A new GromitError
+     */
     static paymentRequired(message: ?string, name: ?string, data: ?Object): GromitError {
         return GromitError.create(402, message, name, data);
     }
 
+    /**
+     * Create a new forbidden (403) error
+     * @param {string} [message] - Override the existing error message if provided
+     * @param {string} [name] - A unique name for the error. If not provided the default name for the status code will be used.
+     * @param {Object} [data] - Extra data to add to the error
+     * @return {GromitError} - A new GromitError
+     */
     static forbidden(message: ?string, name: ?string, data: ?Object): GromitError {
         return GromitError.create(403, message, name, data);
     }
 
+    /**
+     * Create a new notFound (404) error
+     * @param {string} [message] - Override the existing error message if provided
+     * @param {string} [name] - A unique name for the error. If not provided the default name for the status code will be used.
+     * @param {Object} [data] - Extra data to add to the error
+     * @return {GromitError} - A new GromitError
+     */
     static notFound(message: ?string, name: ?string, data: ?Object): GromitError {
         return GromitError.create(404, message, name, data);
     }
 
+    /**
+     * Create a new methodNotAllowed (405) error
+     * @param {string} [message] - Override the existing error message if provided
+     * @param {string} [name] - A unique name for the error. If not provided the default name for the status code will be used.
+     * @param {Object} [data] - Extra data to add to the error
+     * @return {GromitError} - A new GromitError
+     */
     static methodNotAllowed(message: ?string, name: ?string, data: ?Object): GromitError {
         return GromitError.create(405, message, name, data);
     }
 
+    /**
+     * Create a new notAcceptable (406) error
+     * @param {string} [message] - Override the existing error message if provided
+     * @param {string} [name] - A unique name for the error. If not provided the default name for the status code will be used.
+     * @param {Object} [data] - Extra data to add to the error
+     * @return {GromitError} - A new GromitError
+     */
     static notAcceptable(message: ?string, name: ?string, data: ?Object): GromitError {
         return GromitError.create(406, message, name, data);
     }
 
+    /**
+     * Create a new proxyAuthRequired (407) error
+     * @param {string} [message] - Override the existing error message if provided
+     * @param {string} [name] - A unique name for the error. If not provided the default name for the status code will be used.
+     * @param {Object} [data] - Extra data to add to the error
+     * @return {GromitError} - A new GromitError
+     */
     static proxyAuthRequired(message: ?string, name: ?string, data: ?Object): GromitError {
         return GromitError.create(407, message, name, data);
     }
 
+    /**
+     * Create a new clientTimeout (408) error
+     * @param {string} [message] - Override the existing error message if provided
+     * @param {string} [name] - A unique name for the error. If not provided the default name for the status code will be used.
+     * @param {Object} [data] - Extra data to add to the error
+     * @return {GromitError} - A new GromitError
+     */
     static clientTimeout(message: ?string, name: ?string, data: ?Object): GromitError {
         return GromitError.create(408, message, name, data);
     }
 
+    /**
+     * Create a new conflict (409) error
+     * @param {string} [message] - Override the existing error message if provided
+     * @param {string} [name] - A unique name for the error. If not provided the default name for the status code will be used.
+     * @param {Object} [data] - Extra data to add to the error
+     * @return {GromitError} - A new GromitError
+     */
     static conflict(message: ?string, name: ?string, data: ?Object): GromitError {
         return GromitError.create(409, message, name, data);
     }
 
+    /**
+     * Create a new resourceGone (410) error
+     * @param {string} [message] - Override the existing error message if provided
+     * @param {string} [name] - A unique name for the error. If not provided the default name for the status code will be used.
+     * @param {Object} [data] - Extra data to add to the error
+     * @return {GromitError} - A new GromitError
+     */
     static resourceGone(message: ?string, name: ?string, data: ?Object): GromitError {
         return GromitError.create(410, message, name, data);
     }
 
+    /**
+     * Create a new lengthRequired (411) error
+     * @param {string} [message] - Override the existing error message if provided
+     * @param {string} [name] - A unique name for the error. If not provided the default name for the status code will be used.
+     * @param {Object} [data] - Extra data to add to the error
+     * @return {GromitError} - A new GromitError
+     */
     static lengthRequired(message: ?string, name: ?string, data: ?Object): GromitError {
         return GromitError.create(411, message, name, data);
     }
 
+    /**
+     * Create a new preconditionFailed (412) error
+     * @param {string} [message] - Override the existing error message if provided
+     * @param {string} [name] - A unique name for the error. If not provided the default name for the status code will be used.
+     * @param {Object} [data] - Extra data to add to the error
+     * @return {GromitError} - A new GromitError
+     */
     static preconditionFailed(message: ?string, name: ?string, data: ?Object): GromitError {
         return GromitError.create(412, message, name, data);
     }
 
+    /**
+     * Create a new entityTooLarge (413) error
+     * @param {string} [message] - Override the existing error message if provided
+     * @param {string} [name] - A unique name for the error. If not provided the default name for the status code will be used.
+     * @param {Object} [data] - Extra data to add to the error
+     * @return {GromitError} - A new GromitError
+     */
     static entityTooLarge(message: ?string, name: ?string, data: ?Object): GromitError {
         return GromitError.create(413, message, name, data);
     }
 
+    /**
+     * Create a new uriTooLong (414) error
+     * @param {string} [message] - Override the existing error message if provided
+     * @param {string} [name] - A unique name for the error. If not provided the default name for the status code will be used.
+     * @param {Object} [data] - Extra data to add to the error
+     * @return {GromitError} - A new GromitError
+     */
     static uriTooLong(message: ?string, name: ?string, data: ?Object): GromitError {
         return GromitError.create(414, message, name, data);
     }
 
+    /**
+     * Create a new unsupportedMediaType (415) error
+     * @param {string} [message] - Override the existing error message if provided
+     * @param {string} [name] - A unique name for the error. If not provided the default name for the status code will be used.
+     * @param {Object} [data] - Extra data to add to the error
+     * @return {GromitError} - A new GromitError
+     */
     static unsupportedMediaType(message: ?string, name: ?string, data: ?Object): GromitError {
         return GromitError.create(415, message, name, data);
     }
 
+    /**
+     * Create a new rangeNotSatisfiable (416) error
+     * @param {string} [message] - Override the existing error message if provided
+     * @param {string} [name] - A unique name for the error. If not provided the default name for the status code will be used.
+     * @param {Object} [data] - Extra data to add to the error
+     * @return {GromitError} - A new GromitError
+     */
     static rangeNotSatisfiable(message: ?string, name: ?string, data: ?Object): GromitError {
         return GromitError.create(416, message, name, data);
     }
 
+    /**
+     * Create a new expectationFailed (417) error
+     * @param {string} [message] - Override the existing error message if provided
+     * @param {string} [name] - A unique name for the error. If not provided the default name for the status code will be used.
+     * @param {Object} [data] - Extra data to add to the error
+     * @return {GromitError} - A new GromitError
+     */
     static expectationFailed(message: ?string, name: ?string, data: ?Object): GromitError {
         return GromitError.create(417, message, name, data);
     }
 
+    /**
+     * Create a new teapot (418) error
+     * @param {string} [message] - Override the existing error message if provided
+     * @param {string} [name] - A unique name for the error. If not provided the default name for the status code will be used.
+     * @param {Object} [data] - Extra data to add to the error
+     * @return {GromitError} - A new GromitError
+     */
     static teapot(message: ?string, name: ?string, data: ?Object): GromitError {
         return GromitError.create(418, message, name, data);
     }
 
+    /**
+     * Create a new badData (422) error
+     * @param {string} [message] - Override the existing error message if provided
+     * @param {string} [name] - A unique name for the error. If not provided the default name for the status code will be used.
+     * @param {Object} [data] - Extra data to add to the error
+     * @return {GromitError} - A new GromitError
+     */
     static badData(message: ?string, name: ?string, data: ?Object): GromitError {
         return GromitError.create(422, message, name, data);
     }
 
+    /**
+     * Create a new locked (423) error
+     * @param {string} [message] - Override the existing error message if provided
+     * @param {string} [name] - A unique name for the error. If not provided the default name for the status code will be used.
+     * @param {Object} [data] - Extra data to add to the error
+     * @return {GromitError} - A new GromitError
+     */
     static locked(message: ?string, name: ?string, data: ?Object): GromitError {
         return GromitError.create(423, message, name, data);
     }
 
+    /**
+     * Create a new preconditionRequired (428) error
+     * @param {string} [message] - Override the existing error message if provided
+     * @param {string} [name] - A unique name for the error. If not provided the default name for the status code will be used.
+     * @param {Object} [data] - Extra data to add to the error
+     * @return {GromitError} - A new GromitError
+     */
     static preconditionRequired(message: ?string, name: ?string, data: ?Object): GromitError {
         return GromitError.create(428, message, name, data);
     }
 
+    /**
+     * Create a new tooManyRequests (429) error
+     * @param {string} [message] - Override the existing error message if provided
+     * @param {string} [name] - A unique name for the error. If not provided the default name for the status code will be used.
+     * @param {Object} [data] - Extra data to add to the error
+     * @return {GromitError} - A new GromitError
+     */
     static tooManyRequests(message: ?string, name: ?string, data: ?Object): GromitError {
         return GromitError.create(429, message, name, data);
     }
 
+    /**
+     * Create a new illegal (451) error
+     * @param {string} [message] - Override the existing error message if provided
+     * @param {string} [name] - A unique name for the error. If not provided the default name for the status code will be used.
+     * @param {Object} [data] - Extra data to add to the error
+     * @return {GromitError} - A new GromitError
+     */
     static illegal(message: ?string, name: ?string, data: ?Object): GromitError {
         return GromitError.create(451, message, name, data);
     }
 
+    /**
+     * Create a new notImplemented (501) error
+     * @param {string} [message] - Override the existing error message if provided
+     * @param {string} [name] - A unique name for the error. If not provided the default name for the status code will be used.
+     * @param {Object} [data] - Extra data to add to the error
+     * @return {GromitError} - A new GromitError
+     */
     static notImplemented(message: ?string, name: ?string, data: ?Object): GromitError {
         return GromitError.create(501, message, name, data);
     }
 
+    /**
+     * Create a new badGateway (502) error
+     * @param {string} [message] - Override the existing error message if provided
+     * @param {string} [name] - A unique name for the error. If not provided the default name for the status code will be used.
+     * @param {Object} [data] - Extra data to add to the error
+     * @return {GromitError} - A new GromitError
+     */
     static badGateway(message: ?string, name: ?string, data: ?Object): GromitError {
         return GromitError.create(502, message, name, data);
     }
 
+    /**
+     * Create a new serverUnavailable (503) error
+     * @param {string} [message] - Override the existing error message if provided
+     * @param {string} [name] - A unique name for the error. If not provided the default name for the status code will be used.
+     * @param {Object} [data] - Extra data to add to the error
+     * @return {GromitError} - A new GromitError
+     */
     static serverUnavailable(message: ?string, name: ?string, data: ?Object): GromitError {
         return GromitError.create(503, message, name, data);
     }
 
+    /**
+     * Create a new gatewayTimeout (504) error
+     * @param {string} [message] - Override the existing error message if provided
+     * @param {string} [name] - A unique name for the error. If not provided the default name for the status code will be used.
+     * @param {Object} [data] - Extra data to add to the error
+     * @return {GromitError} - A new GromitError
+     */
     static gatewayTimeout(message: ?string, name: ?string, data: ?Object): GromitError {
         return GromitError.create(504, message, name, data);
     }
 
+    /**
+     * Create a new httpVersionNotSupported (505) error
+     * @param {string} [message] - Override the existing error message if provided
+     * @param {string} [name] - A unique name for the error. If not provided the default name for the status code will be used.
+     * @param {Object} [data] - Extra data to add to the error
+     * @return {GromitError} - A new GromitError
+     */
     static httpVersionNotSupported(message: ?string, name: ?string, data: ?Object): GromitError {
         return GromitError.create(505, message, name, data);
     }
 
+    /**
+     * Create a new variantAlsoNegotiates (506) error
+     * @param {string} [message] - Override the existing error message if provided
+     * @param {string} [name] - A unique name for the error. If not provided the default name for the status code will be used.
+     * @param {Object} [data] - Extra data to add to the error
+     * @return {GromitError} - A new GromitError
+     */
     static variantAlsoNegotiates(message: ?string, name: ?string, data: ?Object): GromitError {
         return GromitError.create(506, message, name, data);
     }
 
+    /**
+     * Create a new insufficientStorage (507) error
+     * @param {string} [message] - Override the existing error message if provided
+     * @param {string} [name] - A unique name for the error. If not provided the default name for the status code will be used.
+     * @param {Object} [data] - Extra data to add to the error
+     * @return {GromitError} - A new GromitError
+     */
     static insufficientStorage(message: ?string, name: ?string, data: ?Object): GromitError {
         return GromitError.create(507, message, name, data);
     }
 
+    /**
+     * Create a new bandwidthLimitExceeded (509) error
+     * @param {string} [message] - Override the existing error message if provided
+     * @param {string} [name] - A unique name for the error. If not provided the default name for the status code will be used.
+     * @param {Object} [data] - Extra data to add to the error
+     * @return {GromitError} - A new GromitError
+     */
     static bandwidthLimitExceeded(message: ?string, name: ?string, data: ?Object): GromitError {
         return GromitError.create(509, message, name, data);
     }
 
+    /**
+     * Create a new notExtended (510) error
+     * @param {string} [message] - Override the existing error message if provided
+     * @param {string} [name] - A unique name for the error. If not provided the default name for the status code will be used.
+     * @param {Object} [data] - Extra data to add to the error
+     * @return {GromitError} - A new GromitError
+     */
     static notExtended(message: ?string, name: ?string, data: ?Object): GromitError {
         return GromitError.create(510, message, name, data);
     }
 
+    /**
+     * Create a new networkAuthenticationRequired (511) error
+     * @param {string} [message] - Override the existing error message if provided
+     * @param {string} [name] - A unique name for the error. If not provided the default name for the status code will be used.
+     * @param {Object} [data] - Extra data to add to the error
+     * @return {GromitError} - A new GromitError
+     */
     static networkAuthenticationRequired(message: ?string, name: ?string, data: ?Object): GromitError {
         return GromitError.create(511, message, name, data);
     }
