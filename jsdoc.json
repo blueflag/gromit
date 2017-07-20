@@ -1,43 +1,38 @@
 {
-    "source": {
-        "include": [
-            "README.md",
-            "src"
-        ],
-        "includePattern": ".+jsx?"
-    },
-    "opts": {
-        "destination": "./docs/",
-        "recurse": true,
-        "template": "node_modules/jsdonk",
-        "jsdonk": {
-            "title": "gromit",
-            "sections": {
-                "module": {
-                    "typedef": false
-                },
-                "typedef": false
-            }
-        }
-    },
-    "plugins": [
-        "plugins/markdown",
-        "node_modules/jsdoc-babel",
-        "node_modules/jsdonk/lib/plugins/react-tags",
-        "node_modules/jsdoc-react-proptypes/lib/plugin"
-    ],
-    "babel": {
-        "extensions": [
-            "js",
-            "es6",
-            "jsx"
-        ],
-        "presets": [
-            "es2015",
-            "react"
-        ],
-        "plugins": [
-            "transform-flow-strip-types"
-        ]
+  "source": {
+    "include": ["./src"],
+    "includePattern": ".+(jsx)?"
+  },
+  "opts": {
+    "destination": "./docs/",
+    "recurse": true,
+    "template": "node_modules/jsdonk",
+    "jsdonk": {
+      "title": "Gromit",
+      "repo": {
+        "github": "https://github.com/blueflag/gromit"
+      },
+      "sections": {
+        "module": {
+          "typedef": false
+        },
+        "typedef": false
+      },
+      "output": {
+        "taffyjson": true,
+        "heirarchyjson": true
+      },
+      "debug": false
     }
+  },
+  "plugins": [
+    "plugins/markdown",
+    "node_modules/jsdoc-babel",
+    "node_modules/jsdonk/lib/plugins/react-tags"
+  ],
+  "babel": {
+    "extensions": ["js", "es6", "jsx"],
+    "presets": ["blueflag"],
+    "plugins": ["transform-flow-strip-types"]
+  }
 }

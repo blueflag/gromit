@@ -73,12 +73,16 @@ export type GromitErrorResponseData = {
     data: ?Object
 };
 
+
+
 export default class GromitError extends Error {
     statusCode: number;
     name: string;
     message: string;
     data: ?Object;
     isGromitError: bool = true;
+
+
     constructor(
         error: Error,
         errorData: GromitErrorResponseData
@@ -90,6 +94,7 @@ export default class GromitError extends Error {
         this.data = errorData.data;
     }
 
+
     serialize(): GromitError {
         const message = `[${this.statusCode}][${this.name}] ${this.message}`;
 
@@ -100,6 +105,7 @@ export default class GromitError extends Error {
             data: this.data
         });
     }
+
 
     static deserialize(error: Error): GromitError {
         const errData = error.message.match(/^\[(.+?)\]\[(.+?)\](.+$)/);

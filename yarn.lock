@@ -2813,17 +2813,17 @@ jschardet@^1.4.2:
   version "1.5.0"
   resolved "https://registry.yarnpkg.com/jschardet/-/jschardet-1.5.0.tgz#a61f310306a5a71188e1b1acd08add3cfbb08b1e"
 
+jsdoc-babel@^0.2.1:
+  version "0.2.1"
+  resolved "https://registry.yarnpkg.com/jsdoc-babel/-/jsdoc-babel-0.2.1.tgz#427fcd775f7abf099806ab66aa382b496eea1bd0"
+  dependencies:
+    lodash "^4.13.1"
+
 jsdoc-babel@^0.3.0:
   version "0.3.0"
   resolved "https://registry.yarnpkg.com/jsdoc-babel/-/jsdoc-babel-0.3.0.tgz#2eaaefd9eca8d8b78845394a1cce9d8896befbe1"
   dependencies:
     lodash "^4.13.1"
-
-jsdoc-react-proptypes@^1.0.1:
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/jsdoc-react-proptypes/-/jsdoc-react-proptypes-1.0.2.tgz#66923491d8102affb946adae1e43e09ba8b72b93"
-  dependencies:
-    immutable "^3.8.1"
 
 jsdoc@^3.4.3:
   version "3.5.3"
@@ -2842,9 +2842,9 @@ jsdoc@^3.4.3:
     taffydb "2.6.2"
     underscore "~1.8.3"
 
-jsdonk@^0.5.0:
-  version "0.5.0"
-  resolved "https://registry.yarnpkg.com/jsdonk/-/jsdonk-0.5.0.tgz#fb3d57d31f5eabe54754d9762bcbd066ab6cedd7"
+jsdonk@^0.6.0:
+  version "0.6.0"
+  resolved "https://registry.yarnpkg.com/jsdonk/-/jsdonk-0.6.0.tgz#385630e5afcb72c9d6b2a28e8a2fe6dbd8c7b438"
   dependencies:
     babel-plugin-transform-class-properties "^6.24.1"
     babel-preset-blueflag "^0.3.0"
