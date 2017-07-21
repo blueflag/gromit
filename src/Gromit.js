@@ -140,6 +140,13 @@ export class Gromit {
         };
     }
 
+    unit(configuration: GromitConfiguration): Gromit {
+        return new Gromit({
+            ...this.configuration,
+            configuration
+        });
+    }
+
     /**
      *
      * Returns a new Gromit instance with configuration applied by supplied configurator
@@ -159,8 +166,7 @@ export class Gromit {
      */
 
     uploadProgress(cb: (progressEvent: ProgressEvent) => void): Gromit {
-        return new Gromit({
-            ...this.configuration,
+        return this.unit({
             onUploadProgress: cb
         });
     }
@@ -171,8 +177,7 @@ export class Gromit {
      * @return {Gromit} - a new instance of Gromit
      */
     downloadProgress(cb: (progressEvent: ProgressEvent) => void): Gromit {
-        return new Gromit({
-            ...this.configuration,
+        return this.unit({
             onDownloadProgress: cb
         });
     }
@@ -192,8 +197,7 @@ export class Gromit {
         data: ?GromitBodyData,
         params: ?GromitParamData
     ): Promise<GromitResponse> {
-        return new Gromit({
-            ...this.configuration,
+        return this.unit({
             method: method || this.configuration.method,
             path: typeof path === 'string' ? path : this.configuration.path,
             data: data || this.configuration.data,

@@ -24,7 +24,7 @@ export type GromitResponseResponseData = {
  *
  */
 export default class GromitResponse {
-    requester: Gromit;
+    requester: ?Gromit;
     statusCode: number;
     statusText: string;
     data: any;
