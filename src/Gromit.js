@@ -312,6 +312,15 @@ export class Gromit {
 /**
  *
  * @class Gromit
+ * @example
+ *
+ *
+ * import Gromit from 'gromit';
+ * const requester = Gromit({
+ *     baseUrl: 'http://api.website.com'
+ * });
+ *
+ * const {data} = await requester.get('/endpoint.json');
  *
  */
 export default function GromitFactory(configuration: GromitConfiguration): Gromit {
