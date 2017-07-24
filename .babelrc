@@ -1,6 +1,12 @@
 {
     "presets": [
-        ["blueflag", {"browser": true}]
+        ["blueflag", {
+            "browser": true,
+            "disabled": ["react"]
+        }]
+    ],
+    "plugins": [
+        "transform-flow-comments"
     ],
     "ignore": ["./lib"],
     "env": {
