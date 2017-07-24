@@ -18,7 +18,7 @@
   "private": false,
   "scripts": {
     "watch": "rm -rf lib && babel src --out-dir lib -w",
-    "build": "rm -rf lib && babel src --out-dir lib",
+    "build": "rm -rf lib && babel src --out-dir lib && node ./scripts/flow",
     "build-examples": "cd example && yarn install && yarn run build && cd -",
     "deploy-to-gh-pages": "yarn run build && yarn run build-examples && yarn run docs && node scripts/publish.js",
     "prepublish": "yarn run build",
@@ -36,7 +36,6 @@
     "babel-cli": "^6.23.0",
     "babel-core": "^6.23.0",
     "babel-plugin-istanbul": "^4.1.4",
-    "babel-plugin-transform-flow-comments": "^6.22.0",
     "babel-preset-blueflag": "^0.6.0",
     "babel-register": "^6.23.0",
     "dotenv": "4.0.0",
