@@ -93,6 +93,7 @@ export default class GromitError extends Error {
     message: string;
     data: ?Object;
     isGromitError: bool;
+    stack: string;
 
     /**
      *
@@ -106,10 +107,12 @@ export default class GromitError extends Error {
      *
      */
     constructor(
-        error: Error,
+        error: Object,
         errorData: GromitErrorResponseData
     ) {
-        super(error);
+        super(error.message);
+
+        this.stack = error.stack;
 
         /**
          * The HTTP status code for this error
@@ -154,6 +157,17 @@ export default class GromitError extends Error {
         });
     }
 
+
+    toJSON(): Object {
+        return {
+            stack: this.stack,
+            statusCode: this.statusCode,
+            name: this.name,
+            data: this.data,
+            isGromitError: this.isGromitError
+        };
+    }
+
     /**
      *
      * Deserialize a serialized GromitError. This will pull the serialized data out of the error
@@ -161,7 +175,7 @@ export default class GromitError extends Error {
      * @param {Error} error - The error to deserialize
      * @return {GromitError} - A new GromitError
      */
-    static deserialize(error: Error): GromitError {
+    static deserialize(error: Object): GromitError {
         const errData = error.message.match(/^\[(.+?)\]\[(.+?)\](.+$)/);
         if(!errData) return GromitError.wrap(error);
 
@@ -182,11 +196,11 @@ export default class GromitError extends Error {
      * @param {Object} [data] - Extra data to add to the error
      * @return {GromitError} - A new GromitError
      */
-    static wrap(error: Error, statusCode: ?number, message: ?string, name: ?string, data: ?Object): GromitError {
-        const errorStatusCode = statusCode || 500;
+    static wrap(error: Object, statusCode: ?number, message: ?string, name: ?string, data: ?Object): GromitError {
+        const errorStatusCode = statusCode || parseInt(error.statusCode, 10) || 500;
         const defaultErrorData = STATUS_CODE_MAP[errorStatusCode];
-        const errorMessage = message || error.message;
-        const errorName = name || defaultErrorData.name;
+        const errorMessage = message || error.message || defaultErrorData.message;
+        const errorName = name || error.name || defaultErrorData.name;
 
         return new GromitError(error, {
             statusCode: errorStatusCode,
@@ -212,8 +226,10 @@ export default class GromitError extends Error {
         const errorName = name || defaultErrorData.name;
 
         const error = new Error(errorMessage);
-        Error.captureStackTrace(error, GromitError.create);
 
+        if (typeof Error.captureStackTrace === 'function') {
+            Error.captureStackTrace(error, GromitError.create);
+        }
 
         return new GromitError(error, {
             statusCode: errorStatusCode,
