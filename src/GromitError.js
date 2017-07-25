@@ -10,7 +10,7 @@
 // This implementation is based roughly on Boom: https://github.com/hapijs/boom
 
 import {Gromit} from './Gromit';
-
+import ExtendableError from './util/ExtendableError';
 
 const STATUS_CODE_MAP = {
     '100': {message: 'Continue', name: 'CONTINUE'},
@@ -87,7 +87,8 @@ export type GromitErrorResponseData = {
  * @extends Error
  *
  */
-export default class GromitError extends Error {
+// $FlowFixMe: flow complains about the hacky extending from a function here but it is needed for browser support
+export default class GromitError extends ExtendableError {
     statusCode: number;
     name: string;
     message: string;
@@ -227,7 +228,7 @@ export default class GromitError extends Error {
         const error = new Error(errorMessage);
 
         if (typeof Error.captureStackTrace === 'function') {
-            Error.captureStackTrace(error, GromitError.create);
+            Error.captureStackTrace(error, GromitError);
         }
 
         return new GromitError(error, {
