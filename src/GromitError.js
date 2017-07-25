@@ -160,7 +160,6 @@ export default class GromitError extends Error {
 
     toJSON(): Object {
         return {
-            stack: this.stack,
             statusCode: this.statusCode,
             name: this.name,
             data: this.data,
