@@ -504,6 +504,17 @@ export default class GromitError extends Error {
     }
 
     /**
+     * Create a new internal (500) error
+     * @param {string} [message] - Override the existing error message if provided
+     * @param {string} [name] - A unique name for the error. If not provided the default name for the status code will be used.
+     * @param {Object} [data] - Extra data to add to the error
+     * @return {GromitError} - A new GromitError
+     */
+    static internal(message: ?string, name: ?string, data: ?Object): GromitError {
+        return GromitError.create(500, message, name, data);
+    }
+
+    /**
      * Create a new notImplemented (501) error
      * @param {string} [message] - Override the existing error message if provided
      * @param {string} [name] - A unique name for the error. If not provided the default name for the status code will be used.
