@@ -1,6 +1,6 @@
 //@flow
 
-export default function ExtendableError(message: string) {
+export default function ExtendableError(error: Error) {
     Object.defineProperty(this, 'name', {
         enumerable: false,
         writable: true,
@@ -10,18 +10,14 @@ export default function ExtendableError(message: string) {
     Object.defineProperty(this, 'message', {
         enumerable: false,
         writable: true,
-        value: message
+        value: error.message
     });
 
-    if (Error.hasOwnProperty('captureStackTrace')) { // V8
-        Error.captureStackTrace(this, ExtendableError);
-    } else {
-        Object.defineProperty(this, 'stack', {
-            enumerable: false,
-            writable: true,
-            value: (new Error(message)).stack
-        });
-    }
+    Object.defineProperty(this, 'stack', {
+        enumerable: false,
+        writable: false,
+        value: error.stack
+    });
 }
 
 if (typeof Object.setPrototypeOf === 'function') {

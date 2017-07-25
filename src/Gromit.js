@@ -143,7 +143,7 @@ export class Gromit {
     unit(configuration: GromitConfiguration): Gromit {
         return new Gromit({
             ...this.configuration,
-            configuration
+            ...configuration
         });
     }
 

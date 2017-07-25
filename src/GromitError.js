@@ -94,7 +94,6 @@ export default class GromitError extends ExtendableError {
     message: string;
     data: ?Object;
     isGromitError: bool;
-    stack: string;
 
     /**
      *
@@ -111,9 +110,9 @@ export default class GromitError extends ExtendableError {
         error: Object,
         errorData: GromitErrorResponseData
     ) {
-        super(error.message);
 
-        this.stack = error.stack;
+        super(error);
+
 
         /**
          * The HTTP status code for this error
@@ -219,7 +218,7 @@ export default class GromitError extends ExtendableError {
      * @param {Object} [data] - Extra data to add to the error
      * @return {GromitError} - A new GromitError
      */
-    static create(statusCode: ?number, message: ?string, name: ?string, data: ?Object): GromitError {
+    static create(statusCode: ?number, message: ?string, name: ?string, data: ?Object, caller: Function): GromitError {
         const errorStatusCode = statusCode || 500;
         const defaultErrorData = STATUS_CODE_MAP[errorStatusCode];
         const errorMessage = message || defaultErrorData.message;
@@ -228,7 +227,7 @@ export default class GromitError extends ExtendableError {
         const error = new Error(errorMessage);
 
         if (typeof Error.captureStackTrace === 'function') {
-            Error.captureStackTrace(error, GromitError);
+            Error.captureStackTrace(error, caller || GromitError.create);
         }
 
         return new GromitError(error, {
@@ -248,7 +247,7 @@ export default class GromitError extends ExtendableError {
      * @return {GromitError} - A new GromitError
      */
     static badRequest(message: ?string, name: ?string, data: ?Object): GromitError {
-        return GromitError.create(400, message, name, data);
+        return GromitError.create(400, message, name, data, GromitError.badRequest);
     }
 
     /**
@@ -259,7 +258,7 @@ export default class GromitError extends ExtendableError {
      * @return {GromitError} - A new GromitError
      */
     static unauthorized(message: ?string, name: ?string, data: ?Object): GromitError {
-        return GromitError.create(401, message, name, data);
+        return GromitError.create(401, message, name, data, GromitError.unauthorized);
     }
 
     /**
@@ -270,7 +269,7 @@ export default class GromitError extends ExtendableError {
      * @return {GromitError} - A new GromitError
      */
     static paymentRequired(message: ?string, name: ?string, data: ?Object): GromitError {
-        return GromitError.create(402, message, name, data);
+        return GromitError.create(402, message, name, data, GromitError.paymentRequired);
     }
 
     /**
@@ -281,7 +280,7 @@ export default class GromitError extends ExtendableError {
      * @return {GromitError} - A new GromitError
      */
     static forbidden(message: ?string, name: ?string, data: ?Object): GromitError {
-        return GromitError.create(403, message, name, data);
+        return GromitError.create(403, message, name, data, GromitError.forbidden);
     }
 
     /**
@@ -292,7 +291,7 @@ export default class GromitError extends ExtendableError {
      * @return {GromitError} - A new GromitError
      */
     static notFound(message: ?string, name: ?string, data: ?Object): GromitError {
-        return GromitError.create(404, message, name, data);
+        return GromitError.create(404, message, name, data, GromitError.notFound);
     }
 
     /**
@@ -303,7 +302,7 @@ export default class GromitError extends ExtendableError {
      * @return {GromitError} - A new GromitError
      */
     static methodNotAllowed(message: ?string, name: ?string, data: ?Object): GromitError {
-        return GromitError.create(405, message, name, data);
+        return GromitError.create(405, message, name, data, GromitError.methodNotAllowed);
     }
 
     /**
@@ -314,7 +313,7 @@ export default class GromitError extends ExtendableError {
      * @return {GromitError} - A new GromitError
      */
     static notAcceptable(message: ?string, name: ?string, data: ?Object): GromitError {
-        return GromitError.create(406, message, name, data);
+        return GromitError.create(406, message, name, data, GromitError.notAcceptable);
     }
 
     /**
@@ -325,7 +324,7 @@ export default class GromitError extends ExtendableError {
      * @return {GromitError} - A new GromitError
      */
     static proxyAuthRequired(message: ?string, name: ?string, data: ?Object): GromitError {
-        return GromitError.create(407, message, name, data);
+        return GromitError.create(407, message, name, data, GromitError.proxyAuthRequired);
     }
 
     /**
@@ -336,7 +335,7 @@ export default class GromitError extends ExtendableError {
      * @return {GromitError} - A new GromitError
      */
     static clientTimeout(message: ?string, name: ?string, data: ?Object): GromitError {
-        return GromitError.create(408, message, name, data);
+        return GromitError.create(408, message, name, data, GromitError.clientTimeout);
     }
 
     /**
@@ -347,7 +346,7 @@ export default class GromitError extends ExtendableError {
      * @return {GromitError} - A new GromitError
      */
     static conflict(message: ?string, name: ?string, data: ?Object): GromitError {
-        return GromitError.create(409, message, name, data);
+        return GromitError.create(409, message, name, data, GromitError.conflict);
     }
 
     /**
@@ -358,7 +357,7 @@ export default class GromitError extends ExtendableError {
      * @return {GromitError} - A new GromitError
      */
     static resourceGone(message: ?string, name: ?string, data: ?Object): GromitError {
-        return GromitError.create(410, message, name, data);
+        return GromitError.create(410, message, name, data, GromitError.resourceGone);
     }
 
     /**
@@ -369,7 +368,7 @@ export default class GromitError extends ExtendableError {
      * @return {GromitError} - A new GromitError
      */
     static lengthRequired(message: ?string, name: ?string, data: ?Object): GromitError {
-        return GromitError.create(411, message, name, data);
+        return GromitError.create(411, message, name, data, GromitError.lengthRequired);
     }
 
     /**
@@ -380,7 +379,7 @@ export default class GromitError extends ExtendableError {
      * @return {GromitError} - A new GromitError
      */
     static preconditionFailed(message: ?string, name: ?string, data: ?Object): GromitError {
-        return GromitError.create(412, message, name, data);
+        return GromitError.create(412, message, name, data, GromitError.preconditionFailed);
     }
 
     /**
@@ -391,7 +390,7 @@ export default class GromitError extends ExtendableError {
      * @return {GromitError} - A new GromitError
      */
     static entityTooLarge(message: ?string, name: ?string, data: ?Object): GromitError {
-        return GromitError.create(413, message, name, data);
+        return GromitError.create(413, message, name, data, GromitError.entityTooLarge);
     }
 
     /**
@@ -402,7 +401,7 @@ export default class GromitError extends ExtendableError {
      * @return {GromitError} - A new GromitError
      */
     static uriTooLong(message: ?string, name: ?string, data: ?Object): GromitError {
-        return GromitError.create(414, message, name, data);
+        return GromitError.create(414, message, name, data, GromitError.uriTooLong);
     }
 
     /**
@@ -413,7 +412,7 @@ export default class GromitError extends ExtendableError {
      * @return {GromitError} - A new GromitError
      */
     static unsupportedMediaType(message: ?string, name: ?string, data: ?Object): GromitError {
-        return GromitError.create(415, message, name, data);
+        return GromitError.create(415, message, name, data, GromitError.unsupportedMediaType);
     }
 
     /**
@@ -424,7 +423,7 @@ export default class GromitError extends ExtendableError {
      * @return {GromitError} - A new GromitError
      */
     static rangeNotSatisfiable(message: ?string, name: ?string, data: ?Object): GromitError {
-        return GromitError.create(416, message, name, data);
+        return GromitError.create(416, message, name, data, GromitError.rangeNotSatisfiable);
     }
 
     /**
@@ -435,7 +434,7 @@ export default class GromitError extends ExtendableError {
      * @return {GromitError} - A new GromitError
      */
     static expectationFailed(message: ?string, name: ?string, data: ?Object): GromitError {
-        return GromitError.create(417, message, name, data);
+        return GromitError.create(417, message, name, data, GromitError.expectationFailed);
     }
 
     /**
@@ -446,7 +445,7 @@ export default class GromitError extends ExtendableError {
      * @return {GromitError} - A new GromitError
      */
     static teapot(message: ?string, name: ?string, data: ?Object): GromitError {
-        return GromitError.create(418, message, name, data);
+        return GromitError.create(418, message, name, data, GromitError.teapot);
     }
 
     /**
@@ -457,7 +456,7 @@ export default class GromitError extends ExtendableError {
      * @return {GromitError} - A new GromitError
      */
     static badData(message: ?string, name: ?string, data: ?Object): GromitError {
-        return GromitError.create(422, message, name, data);
+        return GromitError.create(422, message, name, data, GromitError.badData);
     }
 
     /**
@@ -468,7 +467,7 @@ export default class GromitError extends ExtendableError {
      * @return {GromitError} - A new GromitError
      */
     static locked(message: ?string, name: ?string, data: ?Object): GromitError {
-        return GromitError.create(423, message, name, data);
+        return GromitError.create(423, message, name, data, GromitError.locked);
     }
 
     /**
@@ -479,7 +478,7 @@ export default class GromitError extends ExtendableError {
      * @return {GromitError} - A new GromitError
      */
     static preconditionRequired(message: ?string, name: ?string, data: ?Object): GromitError {
-        return GromitError.create(428, message, name, data);
+        return GromitError.create(428, message, name, data, GromitError.preconditionRequired);
     }
 
     /**
@@ -490,7 +489,7 @@ export default class GromitError extends ExtendableError {
      * @return {GromitError} - A new GromitError
      */
     static tooManyRequests(message: ?string, name: ?string, data: ?Object): GromitError {
-        return GromitError.create(429, message, name, data);
+        return GromitError.create(429, message, name, data, GromitError.tooManyRequests);
     }
 
     /**
@@ -501,7 +500,7 @@ export default class GromitError extends ExtendableError {
      * @return {GromitError} - A new GromitError
      */
     static illegal(message: ?string, name: ?string, data: ?Object): GromitError {
-        return GromitError.create(451, message, name, data);
+        return GromitError.create(451, message, name, data, GromitError.illegal);
     }
 
     /**
@@ -512,7 +511,7 @@ export default class GromitError extends ExtendableError {
      * @return {GromitError} - A new GromitError
      */
     static internal(message: ?string, name: ?string, data: ?Object): GromitError {
-        return GromitError.create(500, message, name, data);
+        return GromitError.create(500, message, name, data, GromitError.internal);
     }
 
     /**
@@ -523,7 +522,7 @@ export default class GromitError extends ExtendableError {
      * @return {GromitError} - A new GromitError
      */
     static notImplemented(message: ?string, name: ?string, data: ?Object): GromitError {
-        return GromitError.create(501, message, name, data);
+        return GromitError.create(501, message, name, data, GromitError.notImplemented);
     }
 
     /**
@@ -534,7 +533,7 @@ export default class GromitError extends ExtendableError {
      * @return {GromitError} - A new GromitError
      */
     static badGateway(message: ?string, name: ?string, data: ?Object): GromitError {
-        return GromitError.create(502, message, name, data);
+        return GromitError.create(502, message, name, data, GromitError.badGateway);
     }
 
     /**
@@ -545,7 +544,7 @@ export default class GromitError extends ExtendableError {
      * @return {GromitError} - A new GromitError
      */
     static serverUnavailable(message: ?string, name: ?string, data: ?Object): GromitError {
-        return GromitError.create(503, message, name, data);
+        return GromitError.create(503, message, name, data, GromitError.serverUnavailable);
     }
 
     /**
@@ -556,7 +555,7 @@ export default class GromitError extends ExtendableError {
      * @return {GromitError} - A new GromitError
      */
     static gatewayTimeout(message: ?string, name: ?string, data: ?Object): GromitError {
-        return GromitError.create(504, message, name, data);
+        return GromitError.create(504, message, name, data, GromitError.gatewayTimeout);
     }
 
     /**
@@ -567,7 +566,7 @@ export default class GromitError extends ExtendableError {
      * @return {GromitError} - A new GromitError
      */
     static httpVersionNotSupported(message: ?string, name: ?string, data: ?Object): GromitError {
-        return GromitError.create(505, message, name, data);
+        return GromitError.create(505, message, name, data, GromitError.httpVersionNotSupported);
     }
 
     /**
@@ -578,7 +577,7 @@ export default class GromitError extends ExtendableError {
      * @return {GromitError} - A new GromitError
      */
     static variantAlsoNegotiates(message: ?string, name: ?string, data: ?Object): GromitError {
-        return GromitError.create(506, message, name, data);
+        return GromitError.create(506, message, name, data, GromitError.variantAlsoNegotiates);
     }
 
     /**
@@ -589,7 +588,7 @@ export default class GromitError extends ExtendableError {
      * @return {GromitError} - A new GromitError
      */
     static insufficientStorage(message: ?string, name: ?string, data: ?Object): GromitError {
-        return GromitError.create(507, message, name, data);
+        return GromitError.create(507, message, name, data, GromitError.insufficientStorage);
     }
 
     /**
@@ -600,7 +599,7 @@ export default class GromitError extends ExtendableError {
      * @return {GromitError} - A new GromitError
      */
     static bandwidthLimitExceeded(message: ?string, name: ?string, data: ?Object): GromitError {
-        return GromitError.create(509, message, name, data);
+        return GromitError.create(509, message, name, data, GromitError.bandwidthLimitExceeded);
     }
 
     /**
@@ -611,7 +610,7 @@ export default class GromitError extends ExtendableError {
      * @return {GromitError} - A new GromitError
      */
     static notExtended(message: ?string, name: ?string, data: ?Object): GromitError {
-        return GromitError.create(510, message, name, data);
+        return GromitError.create(510, message, name, data, GromitError.notExtended);
     }
 
     /**
@@ -622,7 +621,7 @@ export default class GromitError extends ExtendableError {
      * @return {GromitError} - A new GromitError
      */
     static networkAuthenticationRequired(message: ?string, name: ?string, data: ?Object): GromitError {
-        return GromitError.create(511, message, name, data);
+        return GromitError.create(511, message, name, data, GromitError.networkAuthenticationRequired);
     }
 
     static fromAxiosError(error: Object, requester: Gromit): GromitError {

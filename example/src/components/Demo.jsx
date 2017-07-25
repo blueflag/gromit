@@ -1,5 +1,5 @@
 import React from 'react';
-import Gromit from 'gromit';
+import Gromit, {GromitError} from 'gromit';
 
 const request = async () => {
     const {data} = await Gromit().get('/src/data/file.json');
