@@ -3,7 +3,7 @@
 export default function ExtendableError(message: string) {
     Object.defineProperty(this, 'name', {
         enumerable: false,
-        writable: false,
+        writable: true,
         value: 'Error'
     });
 
@@ -18,7 +18,7 @@ export default function ExtendableError(message: string) {
     } else {
         Object.defineProperty(this, 'stack', {
             enumerable: false,
-            writable: false,
+            writable: true,
             value: (new Error(message)).stack
         });
     }
