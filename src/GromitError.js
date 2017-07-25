@@ -161,9 +161,9 @@ export default class GromitError extends Error {
     toJSON(): Object {
         return {
             statusCode: this.statusCode,
+            message: this.message,
             name: this.name,
-            data: this.data,
-            isGromitError: this.isGromitError
+            data: this.data
         };
     }
 
