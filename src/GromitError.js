@@ -218,7 +218,7 @@ export default class GromitError extends ExtendableError {
      * @param {Object} [data] - Extra data to add to the error
      * @return {GromitError} - A new GromitError
      */
-    static create(statusCode: ?number, message: ?string, name: ?string, data: ?Object, caller: Function): GromitError {
+    static create(statusCode: ?number, message: ?string, name: ?string, data: ?Object, caller: ?Function): GromitError {
         const errorStatusCode = statusCode || 500;
         const defaultErrorData = STATUS_CODE_MAP[errorStatusCode];
         const errorMessage = message || defaultErrorData.message;
