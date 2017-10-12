@@ -175,7 +175,7 @@ export default class GromitError extends ExtendableError {
      * @return {GromitError} - A new GromitError
      */
     static deserialize(error: Object): GromitError {
-        const errData = error.message.match(/^\[(.+?)\]\[(.+?)\](.+$)/);
+        const errData = error.message.match(/^\[(.+?)\]\[(.+?)\]\W(.+$)/);
         if(!errData) return GromitError.wrap(error);
 
         const message = errData[3];
