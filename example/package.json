@@ -23,7 +23,7 @@
     "extract-text-webpack-plugin": "^1.0.1",
     "immutable-recursive": "^0.0.6",
     "json-loader": "^0.5.4",
-    "node-sass": "^3.13.0",
+    "node-sass": "^4.13.1",
     "postcss": "^5.2.5",
     "postcss-loader": "^1.1.1",
     "sass-loader": "^4.0.2",
