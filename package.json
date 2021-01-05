@@ -95,7 +95,7 @@
     ]
   },
   "dependencies": {
-    "axios": "^0.16.2",
+    "axios": "^0.21.1",
     "babel-runtime": "^6.23.0"
   }
 }
